@@ -27,6 +27,11 @@ namespace LibraryAPI.Services
             author.Books.Add(book);
         }
 
+        public void AddPublisher(Publisher publisher)
+        {
+            _context.Publishers.Add(publisher);
+        }
+
         public bool AuthorExists(int authorId)
         {
             return _context.Authors.Any(a => a.Id == authorId);
@@ -45,6 +50,11 @@ namespace LibraryAPI.Services
         public void DeleteBook(Book book)
         {
             _context.Books.Remove(book);
+        }
+
+        public void DeletePublisher(Publisher publisher)
+        {
+            _context.Publishers.Remove(publisher);
         }
 
         public Author GetAuthor(int authorId, bool includeBooks)
@@ -72,6 +82,16 @@ namespace LibraryAPI.Services
         public IEnumerable<Book> GetBooksForAuthor(int authorId)
         {
             return _context.Books.Include(b => b.Publisher).Where(b => b.AuthorId == authorId).ToList();
+        }
+
+        public Publisher GetPublisher(int publisherId)
+        {
+            return _context.Publishers.FirstOrDefault(p => p.Id == publisherId);
+        }
+
+        public IEnumerable<Publisher> GetPublishers()
+        {
+            return _context.Publishers.OrderBy(p => p.Name).ToList();
         }
 
         public bool Save()

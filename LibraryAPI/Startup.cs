@@ -68,6 +68,7 @@ namespace LibraryAPI
                 cfg.CreateMap<Entities.Book, Models.BookForUpdateDto>();
                 cfg.CreateMap<Entities.Publisher, Models.PublisherDto>();
                 cfg.CreateMap<Models.PublisherDto, Entities.Publisher>();
+                cfg.CreateMap<Models.PublisherForCreationDto, Entities.Publisher>();
             });
 
             app.UseMvc();
