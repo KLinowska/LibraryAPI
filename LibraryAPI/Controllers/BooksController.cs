@@ -102,35 +102,48 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpPut("{authorId}/[controller]/{id}")]
-        public IActionResult UpdateBook(int authorId, int id, [FromBody] BookForUpdateDto book)
+        public IActionResult UpdateBook(int authorId, int id, [FromBody] BookForUpdateDto bookDto)
         {
-            if (book == null)
+            try
             {
-                return BadRequest();
-            }
-            if (!_libraryRepository.AuthorExists(authorId))
-            {
-                return NotFound();
-            }
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                if (bookDto == null)
+                {
+                    return BadRequest();
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (!_libraryRepository.AuthorExists(authorId))
+                {
+                    return NotFound("Author doesn't exist");
+                }
 
-            var bookEntity = _libraryRepository.GetBookForAuthor(authorId, id);
-            if (bookEntity == null)
-            {
-                return NotFound();
+                var bookEntity = _libraryRepository.GetBookForAuthor(authorId, id);
+                if (bookEntity == null)
+                {
+                    return NotFound("Book doesn't exist");
+                }
+
+                var publisherEntity = _libraryRepository.GetPublisher(bookDto.PublisherId);
+                if (publisherEntity == null)
+                {
+                    return NotFound("Publisher doesn't exist");
+                }
+
+                Mapper.Map(bookDto, bookEntity);
+
+                if (!_libraryRepository.Save())
+                {
+                    return StatusCode(500, "A problem happened while handling your request.");
+                }
+
+                return NoContent();
             }
-
-            Mapper.Map(book, bookEntity);
-
-            if (!_libraryRepository.Save())
+            catch (Exception)
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-
-            return NoContent();
         }
 
         [HttpPatch("{authorId}/[controller]/{id}")]

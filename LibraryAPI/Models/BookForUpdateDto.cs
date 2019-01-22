@@ -11,7 +11,7 @@ namespace LibraryAPI.Models
         [Required(ErrorMessage = "You should provide a title value")]
         [MaxLength(50)]
         public string Title { get; set; }
-        public PublisherDto Publisher { get; set; }
+        public int PublisherId { get; set; }
         public long ISBN { get; set; }
     }
 }
